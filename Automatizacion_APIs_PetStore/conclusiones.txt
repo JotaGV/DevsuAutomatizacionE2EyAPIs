@@ -1,0 +1,78 @@
+PETSTORE - OPCION 3 - PRUEBAS DE API (MASCOTAS)
+CONCLUSIONES DEL EJERCICIO
+
+1. OBJETIVO CUMPLIDO
+
+Se ejecutaron correctamente los 4 casos de prueba definidos para la Opcion 3 sobre la API PetStore, cubriendo el flujo de creacion, consulta, actualizacion y validacion de una mascota mediante requests encadenados en Postman.
+
+2. HALLAZGOS TECNICOS
+
+- Las pruebas se ejecutaron utilizando Postman Desktop sobre la API publica https://petstore.swagger.io/v2.
+- La collection utilizo variables de collection para encadenar datos entre requests.
+- El id de la mascota fue capturado dinamicamente desde el primer request y reutilizado en los requests posteriores mediante la variable petId.
+- El endpoint POST /pet permite especificar un id propio en el body, lo cual facilito la trazabilidad del caso de prueba.
+- El endpoint PUT /pet actualiza la mascota por id incluido en el body, sin requerir el envio del id en la URL.
+- El endpoint GET /pet/findByStatus?status=sold devuelve un arreglo con multiples mascotas del sandbox publico, no solamente la mascota creada en esta ejecucion.
+- Debido a lo anterior, la validacion del ultimo request se realizo buscando la mascota creada por id dentro del arreglo de respuesta, evitando asumir que el primer elemento correspondia al dato probado.
+
+3. DETALLE DE EJECUCION
+
+Caso 1:
+Agregar una mascota a la tienda.
+- Metodo / endpoint: POST /pet.
+- Entrada: objeto Pet con id, category, name, photoUrls, tags y status available.
+- Resultado obtenido: 200 OK.
+- Validaciones: 4 de 4 en estado PASSED.
+- Tiempo de respuesta: 509 ms.
+
+Caso 2:
+Consultar la mascota ingresada por ID.
+- Metodo / endpoint: GET /pet/{petId}.
+- Entrada: petId capturado desde el Caso 1.
+- Resultado obtenido: 200 OK.
+- Validaciones: 3 de 3 en estado PASSED.
+- Tiempo de respuesta: 367 ms.
+- Observacion: no fue necesario reintentar el envio, ya que el sandbox publico respondio sin demoras de propagacion durante esta ejecucion.
+
+Caso 3:
+Actualizar el nombre de la mascota y el status a sold.
+- Metodo / endpoint: PUT /pet.
+- Entrada: objeto Pet con el mismo id, name Firulais Adoptado y status sold.
+- Resultado obtenido: 200 OK.
+- Validaciones: 3 de 3 en estado PASSED.
+- Tiempo de respuesta: 95 ms.
+
+Caso 4:
+Consultar la mascota modificada por estatus.
+- Metodo / endpoint: GET /pet/findByStatus?status=sold.
+- Entrada: query param status=sold.
+- Resultado obtenido: 200 OK.
+- Validaciones: 3 de 3 en estado PASSED.
+- Tiempo de respuesta: 254 ms.
+- Observacion: el payload de respuesta fue mas pesado que en los demas casos, ya que el endpoint devuelve todas las mascotas del sandbox publico con ese status. Por esta razon, se filtro la respuesta por id dentro del script de test.
+
+4. RESULTADO FINAL
+
+La ejecucion finalizo correctamente con los siguientes resultados:
+- 4 de 4 requests ejecutados exitosamente.
+- 13 de 13 validaciones automaticas en estado PASSED.
+- Mascota creada correctamente.
+- Mascota consultada correctamente por ID.
+- Mascota actualizada correctamente.
+- Mascota localizada correctamente dentro del listado por estatus.
+- Variable petId capturada y reutilizada correctamente durante el flujo.
+
+5. CONCLUSION GENERAL
+
+- La solucion implementada cumple con el objetivo del ejercicio y demuestra un flujo funcional de pruebas de API sobre PetStore utilizando Postman.
+- La collection generada permite ejecutar una suite basica de regresion para el flujo de gestion de mascotas, ya que automatiza la validacion de codigos de estado, datos de respuesta y reutilizacion de variables entre requests.
+- Ademas, el ejercicio permitio identificar consideraciones importantes al trabajar con un sandbox publico, especialmente en endpoints que devuelven informacion compartida por multiples usuarios.
+
+6. POSIBLES MEJORAS FUTURAS
+
+- Agregar pruebas negativas, por ejemplo consulta de mascota inexistente o body incompleto.
+- Parametrizar mas datos de prueba mediante variables de collection o environment.
+- Incorporar ejecucion automatizada con Newman.
+- Generar reportes HTML de ejecucion.
+- Integrar la ejecucion de la collection en un pipeline CI/CD.
+- Agregar limpieza de datos mediante un request DELETE /pet/{petId}, si el flujo del ejercicio lo permite.

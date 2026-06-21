@@ -1,0 +1,219 @@
+{
+  "info": {
+    "_postman_id": "6d30a491-f681-43fc-850c-2dbfe96a9a3b",
+    "name": "PetStore",
+    "description": "Pruebas de API sobre https://petstore.swagger.io/ - gestion de mascotas (añadir, consultar por ID, actualizar, consultar por estatus).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "23820002"
+  },
+  "item": [
+    {
+      "name": "1. Añadir una mascota a la tienda",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code es 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"La respuesta contiene el id de la mascota creada\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.have.property('id');",
+              "    pm.collectionVariables.set('petId', jsonData.id);",
+              "});",
+              "",
+              "pm.test(\"El nombre coincide con el enviado\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.name).to.eql('Firulais');",
+              "});",
+              "",
+              "pm.test(\"El status es available\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.status).to.eql('available');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": 990001,\n  \"category\": {\n    \"id\": 1,\n    \"name\": \"Perros\"\n  },\n  \"name\": \"Firulais\",\n  \"photoUrls\": [\n    \"https://example.com/firulais.jpg\"\n  ],\n  \"tags\": [\n    {\n      \"id\": 1,\n      \"name\": \"amigable\"\n    }\n  ],\n  \"status\": \"available\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/pet",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "pet"
+          ]
+        },
+        "description": "Crea una nueva mascota en la tienda. Entradas: objeto Pet completo (id, category, name, photoUrls, tags, status). Salida esperada: el mismo objeto Pet creado, status 200."
+      },
+      "response": []
+    },
+    {
+      "name": "2. Consultar la mascota ingresada (por ID)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code es 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"El id devuelto coincide con el solicitado\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.id).to.eql(parseInt(pm.collectionVariables.get('petId')));",
+              "});",
+              "",
+              "pm.test(\"El nombre es Firulais\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.name).to.eql('Firulais');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/pet/{{petId}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "pet",
+            "{{petId}}"
+          ]
+        },
+        "description": "Busca la mascota recien creada usando su ID. Entrada: petId (path param, capturado del request anterior). Salida esperada: objeto Pet completo, status 200."
+      },
+      "response": []
+    },
+    {
+      "name": "3. Actualizar nombre y status a sold",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code es 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"El nombre fue actualizado a Firulais Adoptado\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.name).to.eql('Firulais Adoptado');",
+              "});",
+              "",
+              "pm.test(\"El status fue actualizado a sold\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData.status).to.eql('sold');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": {{petId}},\n  \"category\": {\n    \"id\": 1,\n    \"name\": \"Perros\"\n  },\n  \"name\": \"Firulais Adoptado\",\n  \"photoUrls\": [\n    \"https://example.com/firulais.jpg\"\n  ],\n  \"tags\": [\n    {\n      \"id\": 1,\n      \"name\": \"amigable\"\n    }\n  ],\n  \"status\": \"sold\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/pet",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "pet"
+          ]
+        },
+        "description": "Actualiza el nombre y el status de la mascota creada. Entradas: objeto Pet con el mismo id, nuevo name y status=sold. Salida esperada: objeto Pet actualizado, status 200."
+      },
+      "response": []
+    },
+    {
+      "name": "4. Consultar mascota modificada (por estatus)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code es 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"La respuesta es un arreglo\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    pm.expect(jsonData).to.be.an('array');",
+              "});",
+              "",
+              "pm.test(\"La mascota creada aparece en los resultados con status sold\", function () {",
+              "    var jsonData = pm.response.json();",
+              "    var encontrada = jsonData.find(p => p.id === parseInt(pm.collectionVariables.get('petId')));",
+              "    pm.expect(encontrada).to.not.be.undefined;",
+              "    pm.expect(encontrada.status).to.eql('sold');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/pet/findByStatus?status=sold",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "pet",
+            "findByStatus"
+          ],
+          "query": [
+            {
+              "key": "status",
+              "value": "sold"
+            }
+          ]
+        },
+        "description": "Busca todas las mascotas con status=sold para verificar que la actualizacion fue persistida. Entrada: query param status. Salida esperada: arreglo de objetos Pet, status 200, debe incluir la mascota modificada."
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://petstore.swagger.io/v2"
+    },
+    {
+      "key": "petId",
+      "value": ""
+    }
+  ]
+}

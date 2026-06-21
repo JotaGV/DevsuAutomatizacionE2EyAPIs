@@ -1,0 +1,56 @@
+CONCLUSIONES DEL EJERCICIO
+
+1. OBJETIVO CUMPLIDO
+
+Se implementó correctamente una automatización E2E sobre la aplicación SauceDemo, cubriendo el flujo de compra exitosa desde el login hasta la confirmación final de la orden.
+
+2. HALLAZGOS TÉCNICOS
+
+* La automatización se desarrolló con Selenium WebDriver en C# usando MSTest.
+* Durante la ejecución se identificó un inconveniente al utilizar la configuración inicial de WebDriver como primera opción para la ejecución de la prueba.
+* Como mejor alternativa para el navegador utilizado, se eligió ChromeDriver, permitiendo una ejecución más estable y compatible con Google Chrome.
+* Durante la ejecución también se identificó una interferencia del navegador Chrome relacionada con el administrador de contraseñas y la detección de contraseñas comprometidas.
+* Este comportamiento generaba un popup que afectaba el flujo automatizado.
+* El inconveniente fue resuelto mediante la configuración de ChromeOptions, desactivando las siguientes preferencias únicamente para la instancia de Chrome generada durante la ejecución automatizada:
+  * credentials_enable_service
+  * profile.password_manager_enabled
+  * profile.password_manager_leak_detection
+
+
+3. MEJORAS APLICADAS
+
+* Se incorporaron esperas explícitas para sincronizar la interacción con los elementos web.
+* Se centralizaron métodos auxiliares para acciones como click, escritura y lectura de texto.
+* Se mejoró la estabilidad de la prueba reduciendo fallos por carga dinámica de elementos.
+* Se añadieron pausas visuales para facilitar la observación del flujo paso a paso.
+
+4. RESULTADO FINAL
+
+La automatización ejecuta exitosamente las siguientes acciones:
+* Ingreso a SauceDemo.
+* Login con usuario estándar.
+* Selección de productos.
+* Agregado de productos al carrito.
+* Inicio de checkout.
+* Ingreso de datos del comprador.
+* Finalización de compra.
+* Validación del mensaje final de éxito.
+
+5. CONCLUSIÓN GENERAL
+
+La solución implementada cumple con el objetivo del ejercicio y demuestra un flujo funcional de automatización E2E sobre SauceDemo.
+Además, evidencia capacidad para identificar problemas del entorno, analizarlos y aplicar ajustes técnicos para estabilizar la ejecución.
+
+6. POSIBLES MEJORAS FUTURAS
+
+* Esta es una versión simple, que puede mejorarse para una implementación real mediante el uso de Page Object Model (POM).
+  La implementación de POM permitiría organizar el proyecto con una estructura de carpetas más clara, por ejemplo:
+  * Pages/: clases que representan las páginas o componentes de la aplicación.
+  * Tests/: clases que contienen los casos de prueba automatizados.
+  Este enfoque permitiría tener un código más limpio, organizado y fácil de mantener. Por ejemplo, si cambia un botón o un localizador de la aplicación, el ajuste se realizaría únicamente en la clase correspondiente de Pages, evitando modificar directamente los tests.
+  Además, facilitaría la reutilización de código y permitiría escalar la automatización agregando más pruebas de forma ordenada.
+* Parametrizar datos de prueba.
+* Agregar más escenarios positivos y negativos.
+* Integrar reportes automáticos.
+* Ejecutar pruebas en pipeline CI/CD.
+
